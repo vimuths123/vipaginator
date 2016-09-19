@@ -35,11 +35,13 @@
                         {"firstName": "Lahiru", "lastName": "Fernando"},
                         {"firstName": "Sanjaya", "lastName": "Ruwan"}
                     ];
-                    
+
                     $scope.page2ID = 'paginationDiv2';
                     $scope.countUrl = '/vipaginator/getjsoncount.php';
                     $scope.ajaxUrl = '/vipaginator/getjsonarray.php';
-                    
+
+                    $scope.otherData = {};
+                    $scope.otherData.search = '';
                 }]);
         </script>
     </head>
@@ -56,24 +58,29 @@
             <div class="container">
                 <div class="row" ng-repeat="item in users" style="border: 1px solid black">
                     <div class="col-lg-12">
-                        <p style="margin: 10px 0;">{{ item.firstName }} {{ item.lastName }}</p>
+                        <p style="margin: 10px 0;">{{ item.firstName}} {{ item.lastName}}</p>
                     </div>                   
                 </div>                    
             </div>
 
             <vi-paginator new-array="users" per-page='perPage' div-id="page1ID" items-array='paginateItems'></vi-paginator>
             <!--pagination using normal json array without ajax (end)-->             
-            
-            <!--pagination using ajax (start)-->
+
+            <!--pagination using ajax (start)-->            
+            <div class="form-group">
+                <label for="usr">Search:</label>
+                <input type="text" class="form-control" ng-model="otherData.search">
+            </div>
+
             <div class="container">
                 <div class="row" ng-repeat="item in ajaxusers" style="border: 1px solid black">
                     <div class="col-lg-12">
-                        <p style="margin: 10px 0;">{{ item.firstname }} {{ item.lastname }}</p>
+                        <p style="margin: 10px 0;">{{ item.firstname}} {{ item.lastname}}</p>
                     </div>                   
                 </div>                    
             </div>   
-            
-            <vi-paginator new-array="ajaxusers" per-page='perPage' div-id="page2ID" count-url="countUrl" ajax-url="ajaxUrl"></vi-paginator>
+
+            <vi-paginator ng-show="ajaxusers" other-data="otherData" new-array="ajaxusers" per-page='perPage' div-id="page2ID" count-url="countUrl" ajax-url="ajaxUrl"></vi-paginator>
             <!--pagination using ajax (end)-->
         </div>        
     </body>

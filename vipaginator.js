@@ -639,12 +639,13 @@ angular.module("viPaginator", []).directive('viPaginator', function () {
             ajaxUrl: '=',
             countUrl: '=',
             divId: '=',
+            otherData: '=',
         },
         restrict: 'AE',
         replace: 'true',
         template: '<div style="text-align: center; width: 100%;" id="{{ divId }}"></div>',
         controller: function ($scope, $http) {
-            
+
             if (typeof $scope.itemsArray != 'undefined') {
                 $scope.$watch("perPage", function (perPage) {
 
@@ -674,57 +675,60 @@ angular.module("viPaginator", []).directive('viPaginator', function () {
                             });
                         }
                     };
-                    
-                    $(document).ready(function() {
-                        $('#'+$scope.divId).bootstrapPaginator(options);
+
+                    $(document).ready(function () {
+                        $('#' + $scope.divId).bootstrapPaginator(options);
                     });
 //                            code witch generates the pagination
                 });
             } else {
-                $scope.$watch("perPage", function (perPage) {
-                    $scope.totalItems = 0;
-                    $http({
-                        method: 'POST',
-                        url: $scope.countUrl,
-                    }).success(function (data) {
-                        $scope.totalItems = data;
+                $scope.$watchCollection("otherData", function (perPage) {
+                    $scope.$watch("perPage", function (perPage) {
+                        $scope.totalItems = 0;
                         $http({
                             method: 'POST',
-                            url: $scope.ajaxUrl,
-                            data: {startpoint: 0, perpage: $scope.perPage},
+                            url: $scope.countUrl,
+                            data: {otherdata: $scope.otherData},
                         }).success(function (data) {
-                            $scope.newArray = data;
-                        });
+                            $scope.totalItems = data;
+                            $http({
+                                method: 'POST',
+                                url: $scope.ajaxUrl,
+                                data: {startpoint: 0, perpage: $scope.perPage, otherdata: $scope.otherData},
+                            }).success(function (data) {
+                                $scope.newArray = data;
+                            });
 
-                        var options = {
-                            currentPage: 1,
-                            totalPages: Math.ceil($scope.totalItems / $scope.perPage),
-                            itemTexts: function (type, page, current) {
-                                switch (type) {
-                                    case "first":
-                                        return "First";
-                                    case "prev":
-                                        return "Previous";
-                                    case "next":
-                                        return "Next";
-                                    case "last":
-                                        return "Last";
-                                    case "page":
-                                        return page;
+                            var options = {
+                                currentPage: 1,
+                                totalPages: Math.ceil($scope.totalItems / $scope.perPage),
+                                itemTexts: function (type, page, current) {
+                                    switch (type) {
+                                        case "first":
+                                            return "First";
+                                        case "prev":
+                                            return "Previous";
+                                        case "next":
+                                            return "Next";
+                                        case "last":
+                                            return "Last";
+                                        case "page":
+                                            return page;
+                                    }
+                                },
+                                onPageClicked: function (e, originalEvent, type, page) {
+                                    var startpoint = (page * $scope.perPage) - $scope.perPage;
+                                    $http({
+                                        method: 'POST',
+                                        url: $scope.ajaxUrl,
+                                        data: {startpoint: startpoint, perpage: $scope.perPage, otherdata: $scope.otherData},
+                                    }).success(function (data) {
+                                        $scope.newArray = data;
+                                    });
                                 }
-                            },
-                            onPageClicked: function (e, originalEvent, type, page) {
-                                var startpoint = (page * $scope.perPage) - $scope.perPage;
-                                $http({
-                                    method: 'POST',
-                                    url: $scope.ajaxUrl,
-                                    data: {startpoint: startpoint, perpage: $scope.perPage},
-                                }).success(function (data) {
-                                    $scope.newArray = data;
-                                });
-                            }
-                        };
-                        $('#' + $scope.divId).bootstrapPaginator(options);
+                            };
+                            $('#' + $scope.divId).bootstrapPaginator(options);
+                        });
                     });
                 });
             }
@@ -733,5 +737,5 @@ angular.module("viPaginator", []).directive('viPaginator', function () {
 
     };
 }).controller("appointmentController", function ($scope, $http) {
-    
+
 });
