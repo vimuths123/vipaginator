@@ -96,6 +96,36 @@
 
        	<vi-paginator ng-show="ajaxusers" other-data="otherData" new-array="ajaxusers" per-page='perPage' div-id="page2ID" count-url="countUrl" ajax-url="ajaxUrl"></vi-paginator>
 
-You can give variables other than search too. Since I used '$scope.$watchCollection("otherData", function (perPage) {' instead '$scope.$watch("otherData", function (perPage) {' so the plugin tracks sub variable changes too. You can use '$scope.otherData.yourdata = '';' like this. And remember you have to access this inside backend for count url function too.
+   	You can give variables other than search too. Since I used '$scope.$watchCollection("otherData", function (perPage) {' instead '$scope.$watch("otherData", function (perPage) {' so the plugin tracks sub variable changes too. You can use '$scope.otherData.yourdata = '';' like this. And remember you have to access this inside backend for count url function too.
 
-6. 
+
+6. Angular js post request is bit different from jquery post. So you have to take variables as S_POST['..'] inside php back end.
+
+		<?php
+			$postdata = file_get_contents("php://input");
+			$request = json_decode($postdata);
+
+	Then you can access variables like this,
+		
+		$request->otherdata->search;
+
+7. And lot of modern template engines use '{{ }}' to access variables in front end(Symfony TWIG, Laravel BLADE). So we have to use '[[ ]]' to access angular variables in front end. If so we have to do little change in 'vipaginator.js' line 646.
+
+		template: '<div style="text-align: center; width: 100%;" id="{{ divId }}"></div>',
+	to
+
+		template: '<div style="text-align: center; width: 100%;" id="[[ divId ]]"></div>',
+
+	
+
+    This is how we add '[[ ]]' to angularjs module,,,
+			
+
+		<script type="text/javascript">
+            angular.module('yourapp', ['viPaginator'], function($interpolateProvider) {
+                            $interpolateProvider.startSymbol('[[');
+                            $interpolateProvider.endSymbol(']]');
+            }).controller('yourController', ['$scope', function ($scope) {
+                    ......				             
+            }]);
+        </script>
