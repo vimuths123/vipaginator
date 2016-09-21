@@ -65,3 +65,37 @@
                     $scope.ajaxUrl = '/vipaginator/getjsonarray.php';                    
             }]);
         </script>
+
+5. And if you are intend to use search function you can use otherData variable. 
+
+		<script type="text/javascript">
+            angular.module('yourapp', ['viPaginator']).controller('yourController', ['$scope', function ($scope) {
+                    $scope.perPage = 1;
+                   
+                    $scope.page2ID = 'paginationDiv2';
+                    $scope.countUrl = '/vipaginator/getjsoncount.php';
+                    $scope.ajaxUrl = '/vipaginator/getjsonarray.php';   
+
+					$scope.otherData = {};
+                    $scope.otherData.search = '';                 
+            }]);
+        </script>
+
+		<div class="form-group">
+             <label for="usr">Search:</label>
+             <input type="text" class="form-control" ng-model="otherData.search">
+        </div>
+
+        <div class="container">
+            <div class="row" ng-repeat="item in ajaxusers" style="border: 1px solid black">
+                 <div class="col-lg-12">
+                 	<p style="margin: 10px 0;">{{ item.firstname}} {{ item.lastname}}</p>
+                 </div>                   
+            </div>                    
+        </div>   
+
+       	<vi-paginator ng-show="ajaxusers" other-data="otherData" new-array="ajaxusers" per-page='perPage' div-id="page2ID" count-url="countUrl" ajax-url="ajaxUrl"></vi-paginator>
+
+You can give variables other than search too. Since I used '$scope.$watchCollection("otherData", function (perPage) {' instead '$scope.$watch("otherData", function (perPage) {' so the plugin tracks sub variable changes too. You can use '$scope.otherData.yourdata = '';' like this. And remember you have to access this inside backend for count url function too.
+
+6. 
