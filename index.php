@@ -20,7 +20,6 @@
             angular.module('yourapp', ['viPaginator']).controller('yourController', ['$scope', function ($scope) {
                     $scope.perPage = 1;
                     $scope.page1ID = 'paginationDiv1';
-                    $scope.NoItems = '1';
                     $scope.paginateItems = [
                         {"firstName": "Ruhaim", "lastName": "Izmeth"},
                         {"firstName": "Nuwan", "lastName": "Chamara"},
