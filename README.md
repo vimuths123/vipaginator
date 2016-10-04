@@ -99,7 +99,7 @@
    	You can give variables other than search too. Since I used '$scope.$watchCollection("otherData", function (perPage) {' instead '$scope.$watch("otherData", function (perPage) {' so the plugin tracks sub variable changes too. You can use '$scope.otherData.yourdata = '';' like this. And remember you have to access this inside backend for count url function too.
 
 
-6. Angular js post request is bit different from jquery post. So you have to take variables as S_POST['..'] inside php back end.
+6. Angular js post request is bit different from jquery post. So you can't take variables as S_POST['..'] inside php back end like jquery post. Instead you have to do this
 
 		<?php
 			$postdata = file_get_contents("php://input");
